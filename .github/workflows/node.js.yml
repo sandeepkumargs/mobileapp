@@ -34,8 +34,7 @@ jobs:
           expo build:android \
           --non-interactive \
           --no-wait \
-          --username ${{ secrets.EXPO_USERNAME }} \
-          --password ${{ secrets.EXPO_PASSWORD }}
+          --token ${{ secrets.EXPO_TOKEN }}
 
       # Step 6: Build iOS app
       - name: Build iOS app
@@ -43,8 +42,7 @@ jobs:
           expo build:ios \
           --non-interactive \
           --no-wait \
-          --username ${{ secrets.EXPO_USERNAME }} \
-          --password ${{ secrets.EXPO_PASSWORD }}
+          --token ${{ secrets.EXPO_TOKEN }}
 
       # Step 7: Upload Android APK
       - name: Upload Android APK

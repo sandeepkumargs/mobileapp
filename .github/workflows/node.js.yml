@@ -5,8 +5,8 @@ on:
       - 'main'
 
 jobs:
-  update:
-    name: EAS Update
+  build:
+    name: Build APK
     runs-on: ubuntu-latest
     steps:
       - name: Check for EXPO_TOKEN
@@ -32,19 +32,22 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Build APK
         run: eas build --profile preview --platform android --non-interactive --clear-cache
 
-      - name: GET APK URL from EXPO
-        run: eas build:list --json --limit=1 --platform=android |  jq -r .[0].artifacts.buildUrl
+      - name: Get APK URL from Expo
+        run: |
+          apk_url=$(eas build:list --json --limit=1 --platform=android | jq -r '.[0].artifacts.buildUrl')
+          echo "APK URL: $apk_url"
 
+      - name: Create ZIP file
+        run: zip -r demo-app.zip android/app/build/outputs/apk/*.apk
 
-      - uses: thedoctor0/zip-release@master
+      - name: Upload ZIP file
+        uses: actions/upload-artifact@v2
         with:
-          path: home
-          filename: demo-app.zip
-
-      
+          name: demo-app
+          path: demo-app.zip

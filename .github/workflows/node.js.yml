@@ -51,9 +51,9 @@ jobs:
           name: android
           path: ./android/app/build/outputs/apk/*.apk
 
-      # Step 8: Upload iOS build
-      - name: Upload iOS build
+      # Step 8: Archive iOS build artifacts
+      - name: Archive iOS build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: ios
-          path: ./ios/*.ipa
+          path: ${{ github.workspace }}/ios

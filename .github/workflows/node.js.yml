@@ -1,0 +1,61 @@
+name: Expo Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js and Expo CLI
+      - name: Set up Node.js and Expo CLI
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 3: Install Expo CLI
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 5: Build Android APK
+      - name: Build Android APK
+        run: |
+          expo build:android \
+          --non-interactive \
+          --no-wait \
+          --username ${{ secrets.EXPO_USERNAME }} \
+          --password ${{ secrets.EXPO_PASSWORD }}
+
+      # Step 6: Build iOS app
+      - name: Build iOS app
+        run: |
+          expo build:ios \
+          --non-interactive \
+          --no-wait \
+          --username ${{ secrets.EXPO_USERNAME }} \
+          --password ${{ secrets.EXPO_PASSWORD }}
+
+      # Step 7: Upload Android APK
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: android
+          path: ./android/app/build/outputs/apk/*.apk
+
+      # Step 8: Upload iOS build
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios
+          path: ./ios/*.ipa

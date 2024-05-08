@@ -1,59 +1,50 @@
-name: Expo Build
-
+name: Build and release expo app
 on:
   push:
     branches:
-      - main
+      - 'main'
 
 jobs:
-  build:
+  update:
+    name: EAS Update
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout repository
+      - name: Check for EXPO_TOKEN
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js and Expo CLI
-      - name: Set up Node.js and Expo CLI
+      - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 16.x
+          cache: npm
 
-      # Step 3: Install Expo CLI
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
+      - name: Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      # Step 4: Install dependencies
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      # Step 5: Build Android APK
-      - name: Build Android APK
-        run: |
-          expo build:android \
-          --non-interactive \
-          --no-wait \
-          --token ${{ secrets.EXPO_TOKEN }}
+      - name: Build APK
+        run: eas build --profile preview --platform android --non-interactive --clear-cache
 
-      # Step 6: Build iOS app
-      - name: Build iOS app
-        run: |
-          expo build:ios \
-          --non-interactive \
-          --no-wait \
-          --token ${{ secrets.EXPO_TOKEN }}
+      - name: GET APK URL from EXPO
+        run: eas build:list --json --limit=1 --platform=android |  jq -r .[0].artifacts.buildUrl
 
-      # Step 7: Upload Android APK
-      - name: Upload Android APK
-        uses: actions/upload-artifact@v2
+
+      - uses: thedoctor0/zip-release@master
         with:
-          name: android
-          path: ./android/app/build/outputs/apk/*.apk
+          path: home
+          filename: demo-app.zip
 
-      # Step 8: Archive iOS build artifacts
-      - name: Archive iOS build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ios
-          path: ${{ github.workspace }}/ios
+      

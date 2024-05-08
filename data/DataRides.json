@@ -1,0 +1,46 @@
+[
+  {
+    "duration": "14",
+    "kiloMeter": "2.2",
+    "date": "10 Jan",
+    "time": "6:35 pm",
+    "start": "JP Nagar, Banglore, India",
+    "destination": "Jayanagar, Banglore, India",
+    "efficiency": "20",
+    "topSpeed": "60",
+    "avgSpeed": "29"
+  },
+  {
+    "duration": "59",
+    "kiloMeter": "38",
+    "date": "10 Jan",
+    "time": "6:35 pm",
+    "start": "Kengeri, Banglore, India",
+    "destination": "Jayanagar, Banglore, India",
+    "efficiency": "20",
+    "topSpeed": "60",
+    "avgSpeed": "29"
+  },
+  {
+    "duration": "37",
+    "kiloMeter": "24",
+    "date": "10 Jan",
+    "time": "6:35 pm",
+    "start": "RR Nagar, Banglore, India",
+    "destination": "K R Puram, Banglore, India",
+    "efficiency": "20",
+    "topSpeed": "80",
+    "avgSpeed": "29"
+  },
+  {
+    "duration": "14",
+    "kiloMeter": "2.2",
+    "date": "10 Jan",
+    "time": "6:35 pm",
+    "start": "JP Nagar, Banglore, India",
+    "destination": "Jayanagar, Banglore, India",
+    "efficiency": "20",
+    "topSpeed": "60",
+    "avgSpeed": "29"
+  }
+]

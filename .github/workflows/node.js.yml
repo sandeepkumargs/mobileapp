@@ -37,8 +37,9 @@ jobs:
 
       - name: Build APK
         run: eas build --profile preview --platform android --non-interactive --clear-cache
-
-      - name: Get APK URL from Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: Get APK URL from Expo`
         run: |
           apk_url=$(eas build:list --json --limit=1 --platform=android | jq -r '.[0].artifacts.buildUrl')
           echo "APK URL: $apk_url"

@@ -15,7 +15,7 @@ jobs:
       - name: Install Node.js (if not already installed)
         uses: actions/setup-node@v3
         with:
-          node-version: 16  # Adjust based on project requirements (consider LTS versions)
+          node-version: 21  # Adjust based on project requirements (consider LTS versions)
           cache: 'npm'  # Cache downloaded Node.js and npm packages
 
       - name: Install Java 17 (if not already installed)

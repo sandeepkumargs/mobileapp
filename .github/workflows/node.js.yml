@@ -1,78 +1,31 @@
-name: Build and Run React Native Android App Locally (No Expo Cloud Build)
-
 on:
-  # Define when the workflow should be triggered (e.g., on pushes to the main branch)
   push:
-    branches: [ main ]
-
+    branches:
+      - main
 jobs:
-  build-and-run:
-    runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4  # Checkout code from repository
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
 
-      # Upgrade JRE (if needed)
-      - name: Check JRE version
-        run: |
-          java -version
-          if [[ $? -ne 0 ]]; then
-            echo "WARNING: Java not found. Installing OpenJDK 17..."
-          elif [[ $(java -version 2>&1 | grep -w version | awk '{print $3}') < "17" ]]; then
-            echo "WARNING: Detected JRE version below 17. Upgrading to OpenJDK 17..."
-          else
-            echo "JRE version 17 or higher detected. Skipping upgrade."
-            exit 0  # Exit step if JRE is already compatible
-          fi
-
-      - name: Install OpenJDK 17 (if needed)
-        uses: actions/setup-java@v3
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
         with:
-          distribution: 'adopt'  # Installs OpenJDK from Adoptium
-          java-version: '17'  # Specify desired Java version (adjust if needed)
-          # Consider adding `cache: 'maven'` to cache downloaded OpenJDK packages
+          node-version: 21.x
+          cache: npm
 
-      - name: Install dependencies
-        run: npm install  # Or yarn install
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      # Update outdated dependencies (optional)
-      - name: Update dependencies (optional)
-        run: |
-          npm update expo-router expo-splash-screen react-native-maps
+      - name: 📦 Install dependencies
+        run: npm install
 
-      # Verify JRE upgrade (optional)
-      - name: Verify JRE version after upgrade
-        run: java -version  # Optional step to confirm successful JRE upgrade
-
-      # Install Android SDK using the recommended action
-      - uses: android-actions/setup-android@v3
-
-      # Verify $ANDROID_HOME is properly set for later Gradle commands.
-      - name: Verify ANDROID_HOME
-        run: echo $ANDROID_HOME
-
-      # Choose between emulator or device connection:
-
-      - name: Connect Android Device (if available)
-          # Replace with your preferred method for checking device connection
-        run: |
-            # Example using adb:
-            if [[ $(adb devices | grep -c device) -gt 0 ]]; then
-              echo "Android device found. Skipping emulator startup."
-              exit 0
-            fi
-
-      - name: Start emulator using Android Studio (if installed)
-        run: |
-            if [[ -d /home/runner/android-studio ]]; then
-              /home/runner/android-studio/bin/studio.sh -t emulator @Pixel_3_API_30_XL
-            else
-              echo "WARNING: Android Studio not found. Skipping emulator startup."
-            fi
-
-      # Local Build (No Expo Cloud Build):
-      - name: Build Android app locally (no Expo Cloud)
-        run: |
-          # Replace with your specific commands for local Android build using React Native CLI:
-          # (Example assuming you're targeting a debug build)
-          npx react-native run-android --variant=debug
+      - name: 🚀 Build app
+        run: eas build --non-interactive --platform android --local
+        env:
+          EAS_VERSION: latest
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}

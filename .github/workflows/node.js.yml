@@ -1,4 +1,4 @@
-name: Build React Native Android App
+name: Build and Run React Native Android App with Dependency Update, Emulator Options, and File Handling
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-run:
     runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)
 
     steps:
@@ -35,6 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install  # Or yarn install
 
+      # Update outdated dependencies
+      - name: Update dependencies
+        run: |
+          npm update expo-router expo-splash-screen react-native-maps
+
       # Verify JRE upgrade (optional)
       - name: Verify JRE version after upgrade
         run: java -version  # Optional step to confirm successful JRE upgrade
@@ -43,24 +48,47 @@ jobs:
       - uses: android-actions/setup-android@v3
 
       # Verify $ANDROID_HOME is properly set for later Gradle commands.
-      - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification
+      - name: Verify ANDROID_HOME
+        run: echo $ANDROID_HOME
 
-      # (Optional) Additional verification for adb (if needed)
-      - name: Verify adb functionality
-        run: |
-          which adb  # Check if adb is in the PATH
-          if [[ $? -ne 0 ]]; then
-            echo "WARNING: adb not found in PATH. Functionality might be limited."
-          else
-            adb devices  # Optional: Check for connected devices
-          fi
+      # Choose between emulator or device connection:
 
-      # Build the Android app
-      - name: Run Android build
-        run: npm run android # Adjust command based on your project
+        - name: Connect Android Device (if available)
+          # Replace with your preferred method for checking device connection
+          run: |
+            # Example using adb:
+            if [[ $(adb devices | grep -c device) -gt 0 ]]; then
+              echo "Android device found. Skipping emulator startup."
+              exit 0
+            fi
 
-      # (Optional) Upload AAB artifact
-      - uses: actions/upload-artifact@v3
-        with:
-          name: android-release.aab  # Adjust file name if needed
-          path: android/app/build/outputs/bundle/release/app-release.aab  # Adjust path based on your project
+        - name: Start emulator using Android Studio (if installed)
+          run: |
+            if [[ -d /home/runner/android-studio ]]; then
+              /home/runner/android-studio/bin/studio.sh -t emulator @Pixel_3_API_30_XL
+            else
+              echo "WARNING: Android Studio not found. Skipping emulator startup."
+            fi
+
+      # **File Handling Options (Choose one based on your need):**
+
+        # 1. Download a file from a previous workflow run or another repository:
+        # - uses: actions/download-artifact@v2
+        #   with:
+        #     name: my-artifact  # Name of the artifact containing the file
+        #     path: /path/to/download/location  # Where to download the file on the runner machine
+
+        # 2. Upload a generated file as an artifact:
+        # - uses: actions/upload-artifact@v3
+        #   with:
+        #     name: android-release.aab  # Name of the artifact (adjust as needed)
+        #     path: android/app/build/outputs/bundle/release/app-release.aab  # Path to the file (adjust as needed)
+
+        # 3. Generate a file from a template (replace with your specific commands):
+        # - name: Generate file from template
+        #   run: |
+        #     cat template.txt | sed 's/placeholder/value/g' > new_file.txt
+
+      # Build and run the Android app
+      - name: Run expo start --android
+        run: expo start --android

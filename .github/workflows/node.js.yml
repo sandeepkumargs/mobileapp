@@ -1,4 +1,4 @@
-name: React Native Android AAB Build
+name: Build React Native Android App
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # Checkout code from repository
 
-      - name: Set up Node.js environment (if needed)
+      - name: Install Node.js (if needed)
         # Only add this step if you don't have Node.js installed locally
         uses: actions/setup-node@v3
         with:
@@ -21,6 +21,29 @@ jobs:
       - name: Install dependencies
         run: npm install  # Or yarn install
 
-      - name: Run Android build (release variant)
-        run: npm run android # Adjust command based on your project
+      # Download & install the Android SDK.
+      - uses: malinskiy/action-android/install-sdk@release/0.1.6
+
+      # Verify $ANDROID_HOME is properly set for later Gradle commands.
+      - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification
+
+      # (Optional) Additional verification for adb (if needed)
+      - name: Verify adb functionality
+        run: |
+          which adb  # Check if adb is in the PATH
+          if [[ $? -ne 0 ]]; then
+            echo "WARNING: adb not found in PATH. Functionality might be limited."
+          else
+            adb devices  # Optional: Check for connected devices
+          fi
+
+      # Build the Android app
+      - name: Run Android build
+        run: npm run android:release  # Adjust command based on your project
+
+      # (Optional) Upload AAB artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-release.aab  # Adjust file name if needed
+          path: android/app/build/outputs/bundle/release/app-release.aab  # Adjust path based on your project
 

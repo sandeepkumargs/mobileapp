@@ -45,7 +45,7 @@ jobs:
         with:
          name: my-android-app # Replace with a descriptive name
          path: |
-          project.zip 
+          /home/runner/work/mobileapp/mobileapp/
 
 # Download the AAB artifact after successful build
       - name: Download AAB artifact

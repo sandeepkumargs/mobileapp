@@ -24,14 +24,10 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🚀 Build app
+      - name: 🚀 Build app for andriod
         run: eas build --non-interactive --platform android
-        env:
-          EAS_VERSION: latest
-          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        
           
-      - name: 🚀 Build app
+      - name: 🚀 Build app for ios
         run: eas build --non-interactive --platform ios
-        env:
-          EAS_VERSION: latest
-          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+     

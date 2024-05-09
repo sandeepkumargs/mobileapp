@@ -1,4 +1,4 @@
-name: Build React Native Android App
+name: Build React Native Android App with JRE Upgrade
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -12,25 +12,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # Checkout code from repository
 
-      - name: Install Node.js (if needed)
-        # Only add this step if you don't have Node.js installed locally
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18  # Adjust Node.js version to 18 (or compatible)
-
-      - name: Install dependencies
-        run: npm install  # Or yarn install
-
-      # Ensure JRE version 11 or higher is available
+      # Upgrade JRE (if needed)
       - name: Check JRE version
         run: |
           java -version
           if [[ $? -ne 0 ]]; then
-            echo "WARNING: Java not found. Please install a JRE version 11 or higher."
+            echo "WARNING: Java not found. Installing OpenJDK 11..."
+          elif [[ $(java -version 2>&1 | grep -w version | awk '{print $3}') < "11" ]]; then
+            echo "WARNING: Detected JRE version below 11. Upgrading to OpenJDK 11..."
+          else
+            echo "JRE version 11 or higher detected. Skipping upgrade."
+            exit 0  # Exit step if JRE is already compatible
           fi
 
+      - name: Install OpenJDK 11 (if needed)
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11  # Specify desired JRE version (adjust if needed)
+          # Consider adding `cache: 'maven'` to cache downloaded OpenJDK packages
+
+      - name: Install dependencies
+        run: npm install  # Or yarn install
+
+      # Verify JRE upgrade (optional)
+      - name: Verify JRE version after upgrade
+        run: java -version  # Optional step to confirm successful JRE upgrade
+
       # Download & install the Android SDK.
-      - uses: malinskiy/action-android/install-sdk@release/0.1.6  # Consider a CI/CD platform with pre-configured runners
+      - uses: malinskiy/action-android/install-sdk@release/0.1.6
 
       # Verify $ANDROID_HOME is properly set for later Gradle commands.
       - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification

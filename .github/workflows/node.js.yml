@@ -28,7 +28,8 @@ jobs:
       - name: Install OpenJDK 11 (if needed)
         uses: actions/setup-java@v3
         with:
-          java-version: 11  # Specify desired JRE version (adjust if needed)
+          distribution: 'adopt'  # Installs OpenJDK from Adoptium
+          java-version: '11'  # Specify desired Java version (adjust if needed)
           # Consider adding `cache: 'maven'` to cache downloaded OpenJDK packages
 
       - name: Install dependencies
@@ -56,7 +57,7 @@ jobs:
 
       # Build the Android app
       - name: Run Android build
-        run: npm run android:release  # Adjust command based on your project
+        run: npm run android  # Adjust command based on your project
 
       # (Optional) Upload AAB artifact
       - uses: actions/upload-artifact@v3

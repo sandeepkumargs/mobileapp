@@ -53,17 +53,17 @@ jobs:
 
       # Choose between emulator or device connection:
 
-        - name: Connect Android Device (if available)
+      - name: Connect Android Device (if available)
           # Replace with your preferred method for checking device connection
-          run: |
+        run: |
             # Example using adb:
             if [[ $(adb devices | grep -c device) -gt 0 ]]; then
               echo "Android device found. Skipping emulator startup."
               exit 0
             fi
 
-        - name: Start emulator using Android Studio (if installed)
-          run: |
+      - name: Start emulator using Android Studio (if installed)
+        run: |
             if [[ -d /home/runner/android-studio ]]; then
               /home/runner/android-studio/bin/studio.sh -t emulator @Pixel_3_API_30_XL
             else

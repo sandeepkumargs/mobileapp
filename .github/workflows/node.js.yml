@@ -39,6 +39,14 @@ jobs:
       - name: Verify JRE version after upgrade
         run: java -version  # Optional step to confirm successful JRE upgrade
 
+      # **Rectification 1: Force Re-download of Android SDK Tools**
+      # (Implementation depends on your CI/CD platform)
+      #  - Option 1: Using Environment Variables (example)
+      #    - Define an environment variable like `FORCE_REDOWNLOAD=true` before this step.
+      #    - Modify `malinskiy/action-android/install-sdk` to honor this variable (if platform supports)
+      #  - Option 2: Using Platform-Specific Options
+      #    - Consult your CI/CD platform's documentation for options to force re-download artifacts.
+
       # Download & install the Android SDK.
       - uses: malinskiy/action-android/install-sdk@release/0.1.6
 
@@ -57,11 +65,10 @@ jobs:
 
       # Build the Android app
       - name: Run Android build
-        run: npm run android  # Adjust command based on your project
+        run: npm run android # Adjust command based on your project
 
       # (Optional) Upload AAB artifact
       - uses: actions/upload-artifact@v3
         with:
           name: android-release.aab  # Adjust file name if needed
           path: android/app/build/outputs/bundle/release/app-release.aab  # Adjust path based on your project
-

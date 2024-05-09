@@ -25,5 +25,18 @@ jobs:
         # Or, if using Yarn:
         # run: yarn add expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
 
+      - name: Verify ADB installation
+        run: |
+          which adb  # Check if adb is present in the PATH
+          if [[ $? -ne 0 ]]; then
+            echo "ADB not found. Downloading pre-built version..."
+            # Download pre-built adb if not found (replace URL if needed)
+            curl -L https://dl.google.com/android/repository/platform-tools/latest/android-sdk_platform-tools.zip -o adb.zip
+            unzip adb.zip
+            mv platform-tools/adb /usr/local/bin/  # Move adb to PATH location (adjust if needed)
+            echo "ADB downloaded and installed."
+          fi
+
       - name: Run Android build
-        run: npm run android  # Or npx react-native run-android
+        run: npx react-native run-android
+

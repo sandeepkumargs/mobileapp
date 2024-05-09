@@ -1,19 +1,32 @@
-name: React Native Build
+name: React Native Android Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # Trigger on pushes to the main branch (adjust as needed)
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Replace with your preferred runner environment
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v3  # Checkout code from repository
+      - uses: actions/setup-node@v3  # Set up Node.js environment
         with:
-          node-version: 16
+          node-version: 16  # Adjust Node.js version if needed
+
       - name: Install dependencies
-        run: npm install  # or yarn install
-      - name: Build Android app
-        run: npm run android  # Replace with your build script
-  # Add a similar step for iOS build if needed
+        run: npm install  # Or yarn install
+
+      - name: Update Expo packages (optional)  # Add if you want to update packages
+        run: npm install expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
+        # Or, if using Yarn:
+        # run: yarn add expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
+
+      - name: Install adb (if necessary)  # Add this if ADB installation is automated
+        uses: actions/setup-android@v3
+        with:
+          sdk-api-level: 30  # Adjust API level as needed
+
+      - name: Run Android build
+        run: npm run android  # Or npx react-native run-android
+

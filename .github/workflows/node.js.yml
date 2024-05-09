@@ -1,8 +1,9 @@
-name: React Native Android Build (Local with Download)
+name: React Native Android AAB Build
 
 on:
+  # Define when the workflow should be triggered (e.g., on pushes to the main branch)
   push:
-    branches: [ main ]  # Trigger on pushes to the main branch (adjust as needed)
+    branches: [ main ]
 
 jobs:
   build:
@@ -20,29 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install  # Or yarn install
 
-      # Update Expo packages (optional)
-      - name: Update Expo packages (optional)
-        run: npm install expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
-        # Or, if using Yarn:
-        # run: yarn add expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
+      - name: Run Android build (release variant)
+        run: npm run android:release  # Adjust command based on your project
 
-      - name: Verify ADB installation (optional)
-        run: |
-          which adb  # Check if adb is present in the PATH
-          if [[ $? -ne 0 ]]; then
-            echo "ADB not found. Downloading pre-built version..."
-            # Download pre-built adb if not found (replace URL if needed)
-            curl -L https://dl.google.com/android/repository/platform-tools/latest/platform-tools_latest-linux.zip -o adb.zip  # Adjust URL for your OS
-            unzip adb.zip
-
-            # Set the path to the extracted directory (replace with actual path)
-            export ADB_PATH=$(pwd)/platform-tools  # Assuming extraction happens in the current working directory
-          fi
-
-      - name: Run Android build (using the variable)
-        run: |
-          if [[ -n "$ADB_PATH" ]]; then
-            echo "Using ADB from downloaded path: $ADB_PATH"
-            echo "$ADB_PATH" >> $GITHUB_PATH  # Add path to downloaded ADB temporarily (if needed)
-          fi
-          npx react-native run-android

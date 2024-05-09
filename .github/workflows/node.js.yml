@@ -36,9 +36,9 @@ jobs:
 
       # Optional steps (consider adding):
 
-        - name: Upload build artifact (optional)
-          uses: actions/upload-artifact@v3
-          with:
+      - name: Upload build artifact (optional)
+        uses: actions/upload-artifact@v3
+        with:
             name: android-debug.apk  # Adjust filename and variant based on your build
             path: android/app/build/outputs/apk/debug/app-debug.apk  # Adjust path based on your project
 

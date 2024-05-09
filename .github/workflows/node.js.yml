@@ -23,4 +23,4 @@ jobs:
       run: npm install
 
     - name: Build Android App
-      run: android": "expo start --android",
+      run: npm run android

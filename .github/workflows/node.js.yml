@@ -22,12 +22,21 @@ jobs:
         # Or, if using Yarn:
         # run: yarn add expo-router@~3.4.10 expo-splash-screen@~0.26.5 react-native-maps@1.10.0
 
+      - name: Install ADB (if not found)
+        uses: actions/download-artifact@v3  # Download pre-built ADB if needed
+        with:
+          name: adb  # Name of the artifact (replace if needed)
+          path: /usr/local/bin/  # Download location (adjust path if needed)
       - name: Verify ADB installation
         run: |
           which adb  # Check if adb is present in the PATH
           if [[ $? -ne 0 ]]; then
-            echo "ADB not found. Please install Android SDK tools manually."
-            exit 1
+            echo "ADB not found. Downloading pre-built version..."
+            # Download pre-built ADB if not found (replace URL if needed)
+            curl -L https://dl.google.com/android/repository/platform-tools/latest/android-sdk_platform-tools.zip -o adb.zip
+            unzip adb.zip
+            mv platform-tools/adb /usr/local/bin/  # Move adb to PATH location
+            echo "ADB downloaded and installed."
           fi
 
       - name: Run Android build

@@ -21,4 +21,4 @@ jobs:
       - name: Install deps
         run: npm install
       - name: Build Android APK Bundle
-        run: expo build:android
+        run: eas build:android

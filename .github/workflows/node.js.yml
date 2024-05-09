@@ -1,31 +1,44 @@
+name: Build React Native Android App Locally (EAS)
+
 on:
+  # Define when the workflow should be triggered (e.g., on pushes to the main branch)
   push:
-    branches:
-      - main
+    branches: [ main ]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
+    runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)
 
-      - name: 🏗 Setup Node
+    steps:
+      - uses: actions/checkout@v3  # Checkout code from repository
+
+      - name: Install Node.js (if not already installed)
         uses: actions/setup-node@v3
         with:
-          node-version: 21.x
-          cache: npm
+          node-version: 21  # Adjust based on project requirements (consider LTS versions)
+          cache: 'npm'  # Cache downloaded Node.js and npm packages
 
-      - name: 🏗 Setup EAS
+      - name: Install EAS CLI
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
-        run: npm install
+      - name: Install dependencies
+        run: npm install  # Or yarn install (adjust based on your project)
 
-      - name: 🚀 Build app
-        run: eas build --non-interactive --platform android --local
+      - name: Build Android app locally (using EAS)
+        run: |
+          eas build --non-interactive --platform android --local
         env:
           EAS_VERSION: latest
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # Optional steps (consider adding):
+
+        - name: Upload build artifact (optional)
+          uses: actions/upload-artifact@v3
+          with:
+            name: android-debug.apk  # Adjust filename and variant based on your build
+            path: android/app/build/outputs/apk/debug/app-debug.apk  # Adjust path based on your project
+

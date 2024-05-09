@@ -45,8 +45,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
            name: my-android-app  # Replace with a descriptive name
-           path: /home/runner/work/mobileapp/mobileapp/  # Replace with the path to your AAB file (adjust based on EAS build output)
-
+          
       # Download the AAB artifact after successful build
       - name: Download AAB artifact
         uses: actions/download-artifact@v2

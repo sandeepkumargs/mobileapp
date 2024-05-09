@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)  # Choose an OS that supports Android development
+    runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)
 
     steps:
       - uses: actions/checkout@v3  # Checkout code from repository
@@ -16,13 +16,21 @@ jobs:
         # Only add this step if you don't have Node.js installed locally
         uses: actions/setup-node@v3
         with:
-          node-version: 16  # Adjust Node.js version if needed
+          node-version: 18  # Adjust Node.js version to 18 (or compatible)
 
       - name: Install dependencies
         run: npm install  # Or yarn install
 
+      # Ensure JRE version 11 or higher is available
+      - name: Check JRE version
+        run: |
+          java -version
+          if [[ $? -ne 0 ]]; then
+            echo "WARNING: Java not found. Please install a JRE version 11 or higher."
+          fi
+
       # Download & install the Android SDK.
-      - uses: malinskiy/action-android/install-sdk@release/0.1.6
+      - uses: malinskiy/action-android/install-sdk@release/0.1.6  # Consider a CI/CD platform with pre-configured runners
 
       # Verify $ANDROID_HOME is properly set for later Gradle commands.
       - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification

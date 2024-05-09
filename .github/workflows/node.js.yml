@@ -38,20 +38,19 @@ jobs:
           eas build --non-interactive --platform android --local
         env:
           EAS_VERSION: latest
-          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }} 
 
-     
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v3
         with:
-           name: my-android-app  # Replace with a descriptive name
-           path: |
-            project.zip  
-          
-      # Download the AAB artifact after successful build
+         name: my-android-app # Replace with a descriptive name
+         path: |
+          project.zip 
+
+# Download the AAB artifact after successful build
       - name: Download AAB artifact
         uses: actions/download-artifact@v2
-        if: success()  # Only download if the previous step succeeds
+        if: success() # Only download if the previous step succeeds
         with:
-          name: my-android-app  # Replace with the name you used during upload (if uploaded)
+          name: my-android-app # Replace with the name you used during upload (if uploaded)
           path: ./downloads

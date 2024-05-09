@@ -1,4 +1,4 @@
-name: Build and Run React Native Android App with Dependency Update, Emulator Options, and File Handling
+name: Build and Run React Native Android App Locally (No Expo Cloud Build)
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -35,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: npm install  # Or yarn install
 
-      # Update outdated dependencies
-      - name: Update dependencies
+      # Update outdated dependencies (optional)
+      - name: Update dependencies (optional)
         run: |
           npm update expo-router expo-splash-screen react-native-maps
 
@@ -53,42 +53,26 @@ jobs:
 
       # Choose between emulator or device connection:
 
-      - name: Connect Android Device (if available)
+        - name: Connect Android Device (if available)
           # Replace with your preferred method for checking device connection
-        run: |
+          run: |
             # Example using adb:
             if [[ $(adb devices | grep -c device) -gt 0 ]]; then
               echo "Android device found. Skipping emulator startup."
               exit 0
             fi
 
-      - name: Start emulator using Android Studio (if installed)
-        run: |
+        - name: Start emulator using Android Studio (if installed)
+          run: |
             if [[ -d /home/runner/android-studio ]]; then
               /home/runner/android-studio/bin/studio.sh -t emulator @Pixel_3_API_30_XL
             else
               echo "WARNING: Android Studio not found. Skipping emulator startup."
             fi
 
-      # **File Handling Options (Choose one based on your need):**
-
-        # 1. Download a file from a previous workflow run or another repository:
-        # - uses: actions/download-artifact@v2
-        #   with:
-        #     name: my-artifact  # Name of the artifact containing the file
-        #     path: /path/to/download/location  # Where to download the file on the runner machine
-
-        # 2. Upload a generated file as an artifact:
-        # - uses: actions/upload-artifact@v3
-        #   with:
-        #     name: android-release.aab  # Name of the artifact (adjust as needed)
-        #     path: android/app/build/outputs/bundle/release/app-release.aab  # Path to the file (adjust as needed)
-
-        # 3. Generate a file from a template (replace with your specific commands):
-        # - name: Generate file from template
-        #   run: |
-        #     cat template.txt | sed 's/placeholder/value/g' > new_file.txt
-
-      # Build and run the Android app
-      - name: Run expo start --android
-        run: expo start --android
+      # Local Build (No Expo Cloud Build):
+      - name: Build Android app locally (no Expo Cloud)
+        run: |
+          # Replace with your specific commands for local Android build using React Native CLI:
+          # (Example assuming you're targeting a debug build)
+          npx react-native run-android --variant=debug

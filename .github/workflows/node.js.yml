@@ -1,27 +1,19 @@
-name: Build Android App
+name: React Native Build
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: 🏗 Setup Node
-      uses: actions/setup-node@v3
-      with:
-          node-version: 21.x
-          cache: npm
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build Android App
-      run: npm run android
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm install  # or yarn install
+      - name: Build Android app
+        run: npm run android  # Replace with your build script
+  # Add a similar step for iOS build if needed

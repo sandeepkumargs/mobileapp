@@ -1,29 +1,24 @@
+name: Expo CI CD
+
 on:
   push:
     branches:
       - main
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
+jobs:
+  Build-for-android:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
         with:
           node-version: 21.x
-          cache: npm
-
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
+      - uses: expo/expo-github-action@v5
         with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📦 Install dependencies
+          expo-version: 3.x
+          expo-username: ${{ secrets.EXPO_CLI_USERNAME }}
+          expo-password: ${{ secrets.EXPO_CLI_PASSWORD }}
+      - name: Install deps
         run: npm install
-
-      - name: 🚀 Build app
-        run: eas build --non-interactive --platform android
-
+      - name: Build Android APK Bundle
+        run: expo build:android

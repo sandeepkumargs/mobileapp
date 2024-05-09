@@ -1,4 +1,4 @@
-name: Build React Native Android App with JRE Upgrade (Force Re-download)
+name: Build React Native Android App
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -10,26 +10,26 @@ jobs:
     runs-on: ubuntu-latest  # Replace with your preferred OS (adjust if needed)
 
     steps:
-      - uses: actions/checkout@v3  # Checkout code from repository
+      - uses: actions/checkout@v4  # Checkout code from repository
 
       # Upgrade JRE (if needed)
       - name: Check JRE version
         run: |
           java -version
           if [[ $? -ne 0 ]]; then
-            echo "WARNING: Java not found. Installing OpenJDK 11..."
-          elif [[ $(java -version 2>&1 | grep -w version | awk '{print $3}') < "11" ]]; then
-            echo "WARNING: Detected JRE version below 11. Upgrading to OpenJDK 11..."
+            echo "WARNING: Java not found. Installing OpenJDK 17..."
+          elif [[ $(java -version 2>&1 | grep -w version | awk '{print $3}') < "17" ]]; then
+            echo "WARNING: Detected JRE version below 17. Upgrading to OpenJDK 17..."
           else
-            echo "JRE version 11 or higher detected. Skipping upgrade."
+            echo "JRE version 17 or higher detected. Skipping upgrade."
             exit 0  # Exit step if JRE is already compatible
           fi
 
-      - name: Install OpenJDK 11 (if needed)
+      - name: Install OpenJDK 17 (if needed)
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'  # Installs OpenJDK from Adoptium
-          java-version: '11'  # Specify desired Java version (adjust if needed)
+          java-version: '17'  # Specify desired Java version (adjust if needed)
           # Consider adding `cache: 'maven'` to cache downloaded OpenJDK packages
 
       - name: Install dependencies
@@ -39,17 +39,8 @@ jobs:
       - name: Verify JRE version after upgrade
         run: java -version  # Optional step to confirm successful JRE upgrade
 
-      # **Rectification 1: Force Re-download of Android SDK Tools**
-      # (Implementation depends on your CI/CD platform)
-      #  - Consult your CI/CD platform's documentation for options to force re-download artifacts.
-      #  - Example (if platform supports environment variables):
-      #    - Define an environment variable `FORCE_REDOWNLOAD=true` before this step.
-      #    - Modify `malinskiy/action-android/install-sdk` to honor this variable 
-      #      and trigger a re-download (if supported).
-
-      - uses: malinskiy/action-android/install-sdk@release/0.1.6
-        env:
-          FORCE_REDOWNLOAD: true  # Example environment variable (adjust based on your platform)
+      # Install Android SDK using the recommended action
+      - uses: android-actions/setup-android@v3
 
       # Verify $ANDROID_HOME is properly set for later Gradle commands.
       - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification

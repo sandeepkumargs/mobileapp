@@ -1,4 +1,4 @@
-name: Build React Native Android App with JRE Upgrade
+name: Build React Native Android App with JRE Upgrade (Force Re-download)
 
 on:
   # Define when the workflow should be triggered (e.g., on pushes to the main branch)
@@ -41,14 +41,15 @@ jobs:
 
       # **Rectification 1: Force Re-download of Android SDK Tools**
       # (Implementation depends on your CI/CD platform)
-      #  - Option 1: Using Environment Variables (example)
-      #    - Define an environment variable like `FORCE_REDOWNLOAD=true` before this step.
-      #    - Modify `malinskiy/action-android/install-sdk` to honor this variable (if platform supports)
-      #  - Option 2: Using Platform-Specific Options
-      #    - Consult your CI/CD platform's documentation for options to force re-download artifacts.
+      #  - Consult your CI/CD platform's documentation for options to force re-download artifacts.
+      #  - Example (if platform supports environment variables):
+      #    - Define an environment variable `FORCE_REDOWNLOAD=true` before this step.
+      #    - Modify `malinskiy/action-android/install-sdk` to honor this variable 
+      #      and trigger a re-download (if supported).
 
-      # Download & install the Android SDK.
       - uses: malinskiy/action-android/install-sdk@release/0.1.6
+        env:
+          FORCE_REDOWNLOAD: true  # Example environment variable (adjust based on your platform)
 
       # Verify $ANDROID_HOME is properly set for later Gradle commands.
       - run: echo $ANDROID_HOME  # Print ANDROID_HOME for verification

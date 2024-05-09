@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: npm
+          cache: yarn
 
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
@@ -25,5 +25,4 @@ jobs:
         run: npm install
 
       - name: 🚀 Build app
-        run: eas build --platform android --non-interactive
-
+        run: eas build --non-interactive

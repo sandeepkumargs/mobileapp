@@ -29,5 +29,9 @@ jobs:
         env:
           EAS_VERSION: latest
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-
+          
+      - name: 🚀 Build app
+        run: eas build --non-interactive --platform ios
+        env:
+          EAS_VERSION: latest
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}

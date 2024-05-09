@@ -19,11 +19,8 @@ jobs:
       with:
         node-version: '21' # or any other version required by your project
 
-    - name: Install Gradle
-      run: sudo apt-get install gradle -y
-
     - name: Install dependencies
       run: npm install
 
     - name: Build Android App
-      run: gradle assembleRelease # Adjust the Gradle command according to your project's configuration
+      run: android": "expo start --android",

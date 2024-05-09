@@ -1,33 +1,29 @@
+name: Build Android App
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 21.x
-          cache: npm
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '21' # or any other version required by your project
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+    - name: Install Gradle
+      run: sudo apt-get install gradle -y
 
-      - name: 📦 Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: 🚀 Build app for andriod
-        run: eas build --non-interactive --platform android
-        
-          
-      - name: 🚀 Build app for ios
-        run: eas build --non-interactive --platform ios
-     
+    - name: Build Android App
+      run: gradle assembleRelease # Adjust the Gradle command according to your project's configuration

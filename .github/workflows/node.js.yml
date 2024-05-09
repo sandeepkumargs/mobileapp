@@ -12,8 +12,8 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
-          cache: yarn
+          node-version: 21.x
+          cache: npm
 
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
